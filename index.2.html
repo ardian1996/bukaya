@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasi Cinta</title>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            user-select: none;
+            cursor: pointer;
+            overflow: hidden; /* Ensure sakura stays within view */
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .book, .letter {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: absolute;
+            transition: opacity 1s ease;
+        }
+
+        .book {
+            opacity: 0;
+            display: none; /* Hide the book initially */
+        }
+
+        .letter {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #ff69b4;
+            color: white;
+            text-align: center;
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .letter p {
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .page {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left-page {
+            background-color: #ff69b4;
+            color: white;
+        }
+
+        .right-page {
+            background-color: white;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 1em;
+        }
+
+        p {
+            font-size: 1.2em;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 10px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .heart {
+            color: #ff69b4;
+            font-size: 3em;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .sakura {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ffb6c1;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: fall linear;
+            opacity: 0.8;
+        }
+
+        .sakura:nth-child(1) { animation-duration: 5s; }
+        .sakura:nth-child(2) { animation-duration: 6s; }
+        .sakura:nth-child(3) { animation-duration: 7s; }
+        .sakura:nth-child(4) { animation-duration: 8s; }
+        .sakura:nth-child(5) { animation-duration: 9s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="letter" id="letter" onclick="startAnimation()">
+            <p>DI klik yahh ❤️ </p>
+        </div>
+
+        <div class="book" id="book" onclick="changeSlide(event)">
+            <div class="page left-page">
+                <img id="image" src="1.jpg" alt="Gambar Cinta">
+            </div>
+            <div class="page right-page">
+                <h1>Surat Untukmu</h1>
+                <p id="message">Awalnya, aku tak tahu dari mana perasaan ini datang..</p>
+                <div class="heart">❤️</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sakuraContainer"></div>
+
+    <!-- Audio element for background music -->
+    <audio id="backgroundMusic" src="koyo.mp3" preload="auto"loop></audio>
+
+    <script>
+        const messages = [
+            "Awalnya, aku tak tahu dari mana perasaan ini datang.",
+            "Mungkin saat kita pertama kali berbicara di Discord.",
+            "Seiring berjalannya waktu, interaksi kita semakin sering,",
+            "Perasaan ini datang silih berganti, membuat hatiku seperti terkena virus. ",
+		"Diam-diam, aku berusaha menahannya,  ",
+		"Namun virus ini terus menjalar,  ",
+		"Hingga akhirnya aku menyadari bahwa  ",
+		"Aku telah jatuh cinta padamu. ",
+            "Terimakasih telah hadir dalam hidupku. Novi Adripita"
+
+        ];
+
+        const images = [
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "4.jpg",
+            "5.jpg",
+            "6.jpg",
+            "7.png",
+            "8.jpg",
+            "9.jpg"
+        ];
+
+        let index = 0;
+
+        function changeSlide(event) {
+            event.stopPropagation(); // Prevent triggering the playMusic function
+            index = (index + 1) % messages.length;
+            document.getElementById("message").innerText = messages[index];
+            document.getElementById("image").src = images[index];
+        }
+
+        function playMusic() {
+            const audio = document.getElementById("backgroundMusic");
+            audio.play().catch(error => {
+                console.error("Failed to play music:", error);
+            });
+        }
+
+        function startAnimation() {
+            console.log("Animation start triggered"); // Debugging log
+            playMusic(); // Ensure music starts playing when letter is clicked
+            document.getElementById("letter").style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById("letter").style.display = 'none'; // Hide letter after fade out
+                document.getElementById("book").style.display = 'flex'; // Show book
+                setTimeout(() => {
+                    document.getElementById("book").style.opacity = 1;
+                }, 0); // Apply opacity transition immediately
+            }, 1000); // Matches the fade-out duration
+        }
+
+        function createSakura() {
+            const container = document.getElementById('sakuraContainer');
+            const numberOfSakura = 50;
+
+            for (let i = 0; i < numberOfSakura; i++) {
+                const sakura = document.createElement('div');
+                sakura.className = 'sakura';
+                sakura.style.left = `${Math.random() * 100}vw`;
+                sakura.style.top = `${Math.random() * 100}vh`;
+                sakura.style.animationDuration = `${Math.random() * 10 + 5}s`; // Random duration
+                container.appendChild(sakura);
+            }
+        }
+
+        createSakura();
+    </script>
+</body>
+</html>
